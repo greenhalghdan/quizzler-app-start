@@ -1,5 +1,4 @@
 import requests
-
 paramaters = {
     "amount": 10,
     "type": "boolean"
