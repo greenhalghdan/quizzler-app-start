@@ -23,13 +23,31 @@ class QuizInterface:
 
         self.window.mainloop()
     def get_next_question(self):
-        q_text = self.quiz.next_question()
-        self.question.itemconfig(self.question_text, text=q_text)
+        self.question.config(bg="white")
+        if self.quiz.still_has_questions():
 
+            self.score.config(text=f"Score: {self.quiz.score}")
+            q_text = self.quiz.next_question()
+            self.question.itemconfig(self.question_text, text=q_text)
+        else:
+            self.question.itemconfig(self.question_text, text=f"You have finished the quiz")
+            self.true_button.config(state="disabled")
+            self.false_button.config(state="disabled")
     def submit_answer_false(self):
-        QuizBrain.check_answer(self.quiz, user_answer="False")
-        self.get_next_question()
+        self.give_feedback(self.quiz.check_answer("False"))
 
     def submit_answer_true(self):
-        QuizBrain.check_answer(self.quiz, user_answer="True")
+        self.give_feedback(self.quiz.check_answer("True"))
+
+
+    def give_feedback(self, is_right):
+        if is_right:
+            self.question.config(bg="green")
+            self.window.after(1000, self.get_next_question)
+        else:
+            self.question.config(bg="red")
+            self.window.after(1000, self.get_next_question)
+
+    def next_question(self):
         self.get_next_question()
+
